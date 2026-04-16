@@ -1,0 +1,6 @@
+Scenario,Portfolio avg CLV ($),Basic avg CLV ($),Premium avg CLV ($),Net CLV after CAC ($),Share payback ≤12 mo
+Base case,57.52,43.38,93.88,28.28,95.1%
+Retention −3 pp,47.71,36.87,75.61,18.48,88.3%
+Retention +2 pp,67.05,49.27,112.78,37.81,97.6%
+Infrastructure cost +20%,50.47,37.91,82.78,21.24,85.3%
+Premium adoption rises to 35%,61.05,43.38,93.88,31.82,95.1%

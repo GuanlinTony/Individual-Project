@@ -1,0 +1,3 @@
+subscription_tier,users,avg_price,avg_retention,avg_infra_cost,avg_margin,avg_cac,avg_clv,avg_net_clv,avg_clv_cac,avg_payback,pct_payback_12m
+Premium,28007,18.99,0.8706,6.6219,12.3681,34.991,93.8808,58.8897,2.8305,3.9796,0.9999
+Basic,71993,11.99,0.8304,4.393,7.597,26.9985,43.3773,16.3788,1.7009,6.2894,0.932

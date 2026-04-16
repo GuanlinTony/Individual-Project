@@ -1,0 +1,10 @@
+Tier,KPI,Target / Guardrail,Source / Model link,Review cadence
+North Star,Portfolio contribution-margin CLV,≥ $58 (base-case simulation),table_headline_metrics.csv → avg CLV,Monthly
+North Star,CLV:CAC ratio,≥ 2.0× (human-set floor),table_headline_metrics.csv → CLV:CAC,Monthly
+Weekly Operational,Monthly paid subscriber count,Track weekly; no hard floor at launch,Subscription platform event log,Weekly
+Weekly Operational,Blended CPI (cost per install),≤ $29 blended (base-case CAC ceiling),Ad platform reports; table_targeting_decision.csv → max CAC ceiling,Weekly
+Weekly Operational,D30 retention rate,≥ 84% (base-case retention),In-app event log; feeds churn model input,Weekly
+Weekly Operational,"Payback period (median, rolling cohort)",≤ 5 months (base-case median),table_tier_summary.csv → avg_payback,Monthly
+Diagnostic,Premium tier conversion rate,≥ 28% (base-case Premium share),Subscription platform; table_tier_summary.csv → tier mix,Weekly
+Diagnostic,Churn model precision @ threshold,≥ 0.70 precision at operating threshold,Churn model evaluation (post-launch),Monthly
+Diagnostic,Infrastructure cost per user per month,≤ $5.02 (base-case mean),Cloud billing API; table_segment_summary.csv → avg_margin,Weekly

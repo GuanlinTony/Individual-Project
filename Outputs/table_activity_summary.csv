@@ -1,0 +1,4 @@
+activity_level,users,avg_retention,avg_margin,avg_cac,avg_clv,avg_net_clv,avg_payback
+Heavy,19981,0.891,6.6958,29.1912,62.4495,33.2583,7.3341
+Medium,44886,0.8513,8.753,29.2229,59.2384,30.0155,5.5487
+Light,35133,0.8013,10.4359,29.281,52.5262,23.2451,4.7846

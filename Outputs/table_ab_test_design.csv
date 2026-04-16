@@ -1,0 +1,15 @@
+Parameter,Value
+Test name,Playable vs. Standard Video Ad
+Control,Standard video ad → install
+Treatment,Playable ad (60-sec streamed demo) → install
+Primary metric,D30 retention rate
+Segment,Premium | Heavy
+Base-case D30 retention (control),0.920
+Minimum detectable effect,+3 pp (0.03)
+Significance level (α),0.05
+Statistical power (1−β),0.8
+Required sample per arm,"1,059"
+Required total sample,"2,118"
+CLV uplift per user if MDE achieved,$53.50
+Total CLV uplift across test cohort,"$113,303"
+Decision rule,Roll-out if lift ≥ 3 pp at p < 0.05; else retest
