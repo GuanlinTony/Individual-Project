@@ -49,7 +49,7 @@ PALETTE = {
     "teal":   "#00C8B8",   # electric teal
     "rose":   "#FF4D6D",   # vivid rose/alert
     "light":  "#E6EDF5",
-    "dgrey":  "#8AB4CC",   # muted cyan-grey for body text on dark bg
+    "dgrey":  "#C8DDEF",   # unified body text — light silver-blue, clearly distinct from dark bg
     # New accents
     "cyan":   "#00D4FF",
     "violet": "#7B2FFF",
@@ -62,16 +62,16 @@ _aegis_template = go.layout.Template(
     layout=go.Layout(
         paper_bgcolor="rgba(6,12,28,0)",
         plot_bgcolor="rgba(6,12,28,0)",
-        font=dict(color="#7ab5cc"),
+        font=dict(color="#C8DDEF"),
         xaxis=dict(
             gridcolor="rgba(0,180,255,0.12)",
-            color="#7ab5cc",
+            color="#C8DDEF",
             linecolor="rgba(0,180,255,0.20)",
             zerolinecolor="rgba(0,180,255,0.18)",
         ),
         yaxis=dict(
             gridcolor="rgba(0,180,255,0.12)",
-            color="#7ab5cc",
+            color="#C8DDEF",
             linecolor="rgba(0,180,255,0.20)",
             zerolinecolor="rgba(0,180,255,0.18)",
         ),
@@ -147,7 +147,7 @@ st.markdown(
         color: {PALETTE["cyan"]} !important;
         text-shadow: 0 0 28px rgba(0,212,255,0.45);
     }}
-    h2, h3 {{ color: #48c8e0 !important; }}
+    h2, h3 {{ color: #C8DDEF !important; }}
 
     /* ── KPI metric cards ── */
     [data-testid="stMetric"] {{
@@ -174,7 +174,7 @@ st.markdown(
     section[data-testid="stSidebar"] label,
     section[data-testid="stSidebar"] p,
     section[data-testid="stSidebar"] span {{
-        color: #7ab5cc !important;
+        color: #C8DDEF !important;
     }}
     section[data-testid="stSidebar"] h2 {{
         color: {PALETTE["cyan"]} !important;
@@ -182,7 +182,7 @@ st.markdown(
 
     /* ── Tabs ── */
     [data-testid="stTabs"] [role="tab"] {{
-        color: #5a95b0 !important;
+        color: #C8DDEF !important;
         border-color: rgba(0,150,255,0.15) !important;
     }}
     [data-testid="stTabs"] [role="tab"][aria-selected="true"] {{
@@ -201,7 +201,7 @@ st.markdown(
         padding: 10px 14px;
         border-radius: 6px;
         font-size: 0.9rem;
-        color: #a0c8dc;
+        color: #C8DDEF;
         backdrop-filter: blur(6px);
     }}
     </style>
