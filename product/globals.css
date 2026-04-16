@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    @apply bg-bg text-ink;
+    /* Subtle radial vignette — makes the dark UI feel cinematic */
+    background-image:
+      radial-gradient(1200px 600px at 15% -10%, rgba(34, 211, 238, 0.06), transparent 60%),
+      radial-gradient(900px 500px at 85% 110%, rgba(245, 197, 24, 0.05), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  /* Firefox scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #2A3A5C #070B14;
+  }
+  /* WebKit scrollbar */
+  *::-webkit-scrollbar { width: 8px; height: 8px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb {
+    background: #2A3A5C;
+    border-radius: 4px;
+  }
+  *::-webkit-scrollbar-thumb:hover { background: #3B4B70; }
+}
+
+@layer components {
+  /* Subtle grid background used behind the mock game view */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(42, 58, 92, 0.25) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(42, 58, 92, 0.25) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
