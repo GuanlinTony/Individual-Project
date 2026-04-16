@@ -191,6 +191,17 @@ st.markdown(
         background: rgba(0,100,200,0.14) !important;
     }}
 
+    /* ── All body / markdown paragraph text ── */
+    p, li, span, label, caption,
+    [data-testid="stMarkdownContainer"],
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] li,
+    [data-testid="stCaptionContainer"],
+    .stMarkdown, .stMarkdown p,
+    .stText, div.stText p {{
+        color: #C8DDEF !important;
+    }}
+
     /* ── Divider ── */
     hr {{ border-color: rgba(0,180,255,0.18) !important; }}
 
