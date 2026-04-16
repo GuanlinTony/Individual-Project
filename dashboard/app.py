@@ -28,6 +28,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
 import streamlit as st
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -40,41 +41,239 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Navy / gold / teal palette, matching Tony's presentation deck
+# Cloud-gaming palette — deep space base with electric cyan / neon gold / violet accents
 PALETTE = {
-    "navy": "#0B2545",
-    "steel": "#13315C",
-    "gold": "#D4A017",
-    "teal": "#1C7C7C",
-    "rose": "#C04A5E",
-    "light": "#E6EDF5",
-    "dgrey": "#4A4A4A",
+    "navy":   "#0B2545",   # kept for data references
+    "steel":  "#13315C",
+    "gold":   "#F0B429",   # warmer neon gold
+    "teal":   "#00C8B8",   # electric teal
+    "rose":   "#FF4D6D",   # vivid rose/alert
+    "light":  "#E6EDF5",
+    "dgrey":  "#8AB4CC",   # muted cyan-grey for body text on dark bg
+    # New accents
+    "cyan":   "#00D4FF",
+    "violet": "#7B2FFF",
+    "bg":     "#060C1C",   # near-black deep-space background
 }
 TIER_COLORS = {"Premium": PALETTE["gold"], "Basic": PALETTE["teal"]}
 
-# Injected CSS to align the look-and-feel with the deck
+# Global Plotly dark/gaming template — applied to every chart automatically
+_aegis_template = go.layout.Template(
+    layout=go.Layout(
+        paper_bgcolor="rgba(6,12,28,0)",
+        plot_bgcolor="rgba(6,12,28,0)",
+        font=dict(color="#7ab5cc"),
+        xaxis=dict(
+            gridcolor="rgba(0,180,255,0.12)",
+            color="#7ab5cc",
+            linecolor="rgba(0,180,255,0.20)",
+            zerolinecolor="rgba(0,180,255,0.18)",
+        ),
+        yaxis=dict(
+            gridcolor="rgba(0,180,255,0.12)",
+            color="#7ab5cc",
+            linecolor="rgba(0,180,255,0.20)",
+            zerolinecolor="rgba(0,180,255,0.18)",
+        ),
+    )
+)
+pio.templates["aegis"] = _aegis_template
+pio.templates.default = "aegis"
+
+# ── Injected CSS: dark cloud-gaming theme ─────────────────────────────────────
 st.markdown(
     f"""
     <style>
-    .main .block-container {{ padding-top: 1.5rem; padding-bottom: 2rem; max-width: 1400px; }}
-    h1, h2, h3 {{ color: {PALETTE["navy"]}; }}
-    .stMetric {{
-        background-color: {PALETTE["light"]};
-        padding: 14px 16px;
-        border-radius: 8px;
-        border-left: 4px solid {PALETTE["navy"]};
+    /* ── App-wide dark background ── */
+    [data-testid="stAppViewContainer"] {{
+        background:
+            radial-gradient(ellipse at 12% 38%, rgba(20,80,220,0.18) 0%, transparent 52%),
+            radial-gradient(ellipse at 88% 14%, rgba(120,20,240,0.14) 0%, transparent 44%),
+            radial-gradient(ellipse at 58% 82%, rgba(0,180,200,0.12) 0%, transparent 48%),
+            linear-gradient(160deg, #050a18 0%, #08112a 55%, #060c1e 100%);
+        background-attachment: fixed;
     }}
-    div[data-testid="stMetricValue"] {{ color: {PALETTE["navy"]}; font-weight: 700; }}
-    div[data-testid="stMetricLabel"] {{ color: {PALETTE["dgrey"]}; font-size: 0.85rem; }}
-    section[data-testid="stSidebar"] {{ background-color: #F7F9FC; }}
+
+    /* ── Animated network-grid overlay (suggests cloud topology) ── */
+    [data-testid="stAppViewContainer"]::before {{
+        content: '';
+        position: fixed;
+        inset: -60px 0 0 0;
+        background-image:
+            linear-gradient(rgba(0,190,255,0.045) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,190,255,0.045) 1px, transparent 1px);
+        background-size: 64px 64px;
+        animation: netScroll 22s linear infinite;
+        pointer-events: none;
+        z-index: 0;
+    }}
+    @keyframes netScroll {{
+        from {{ background-position: 0 0;   }}
+        to   {{ background-position: 0 64px; }}
+    }}
+
+    /* ── Node-dot pulse at grid intersections ── */
+    [data-testid="stAppViewContainer"]::after {{
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: radial-gradient(circle, rgba(0,190,255,0.22) 1.2px, transparent 1.2px);
+        background-size: 64px 64px;
+        animation: nodePulse 5s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }}
+    @keyframes nodePulse {{
+        0%, 100% {{ opacity: 0.30; }}
+        50%       {{ opacity: 0.80; }}
+    }}
+
+    /* ── Glass content panel ── */
+    .main .block-container {{
+        position: relative;
+        z-index: 1;
+        padding-top: 1.5rem;
+        padding-bottom: 2rem;
+        max-width: 1400px;
+        background: rgba(6, 12, 28, 0.62) !important;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: 18px;
+        border: 1px solid rgba(0,180,255,0.12);
+    }}
+
+    /* ── Headers ── */
+    h1 {{
+        color: {PALETTE["cyan"]} !important;
+        text-shadow: 0 0 28px rgba(0,212,255,0.45);
+    }}
+    h2, h3 {{ color: #48c8e0 !important; }}
+
+    /* ── KPI metric cards ── */
+    [data-testid="stMetric"] {{
+        background: rgba(0, 30, 70, 0.65) !important;
+        padding: 14px 16px;
+        border-radius: 10px;
+        border: 1px solid rgba(0,180,255,0.22) !important;
+        border-left: 4px solid {PALETTE["cyan"]} !important;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 0 22px rgba(0,180,255,0.09), inset 0 1px 0 rgba(255,255,255,0.04);
+        transition: box-shadow 0.3s ease;
+    }}
+    [data-testid="stMetric"]:hover {{
+        box-shadow: 0 0 38px rgba(0,180,255,0.22), inset 0 1px 0 rgba(255,255,255,0.07);
+    }}
+    div[data-testid="stMetricValue"] {{ color: {PALETTE["cyan"]} !important; font-weight: 700; }}
+    div[data-testid="stMetricLabel"] {{ color: {PALETTE["dgrey"]} !important; font-size: 0.85rem; }}
+
+    /* ── Sidebar ── */
+    section[data-testid="stSidebar"] {{
+        background: linear-gradient(180deg, #04091a 0%, #070d22 100%) !important;
+        border-right: 1px solid rgba(0,180,255,0.18) !important;
+    }}
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span {{
+        color: #7ab5cc !important;
+    }}
+    section[data-testid="stSidebar"] h2 {{
+        color: {PALETTE["cyan"]} !important;
+    }}
+
+    /* ── Tabs ── */
+    [data-testid="stTabs"] [role="tab"] {{
+        color: #5a95b0 !important;
+        border-color: rgba(0,150,255,0.15) !important;
+    }}
+    [data-testid="stTabs"] [role="tab"][aria-selected="true"] {{
+        color: {PALETTE["cyan"]} !important;
+        border-bottom: 2px solid {PALETTE["cyan"]} !important;
+        background: rgba(0,100,200,0.14) !important;
+    }}
+
+    /* ── Divider ── */
+    hr {{ border-color: rgba(0,180,255,0.18) !important; }}
+
+    /* ── Callout block ── */
     .block-note {{
-        background-color: #FFF8E1;
+        background: rgba(0, 40, 90, 0.70);
         border-left: 4px solid {PALETTE["gold"]};
         padding: 10px 14px;
-        border-radius: 4px;
+        border-radius: 6px;
         font-size: 0.9rem;
-        color: {PALETTE["dgrey"]};
+        color: #a0c8dc;
+        backdrop-filter: blur(6px);
     }}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ── Fixed background: floating orbs + streaming data-packet lines ──────────────
+st.markdown(
+    """
+    <div id="aegis-bg-layer" style="
+        position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;">
+
+      <!-- Floating colour orbs -->
+      <div style="position:absolute;width:520px;height:520px;
+           background:radial-gradient(circle,rgba(0,100,255,0.13) 0%,transparent 70%);
+           border-radius:50%;top:5%;left:3%;
+           animation:orb1 18s ease-in-out infinite;"></div>
+      <div style="position:absolute;width:380px;height:380px;
+           background:radial-gradient(circle,rgba(110,0,255,0.11) 0%,transparent 70%);
+           border-radius:50%;bottom:12%;right:6%;
+           animation:orb2 24s ease-in-out infinite;"></div>
+      <div style="position:absolute;width:300px;height:300px;
+           background:radial-gradient(circle,rgba(0,200,180,0.09) 0%,transparent 70%);
+           border-radius:50%;top:45%;left:55%;
+           animation:orb3 20s ease-in-out infinite;"></div>
+      <div style="position:absolute;width:200px;height:200px;
+           background:radial-gradient(circle,rgba(240,180,0,0.08) 0%,transparent 70%);
+           border-radius:50%;top:70%;left:25%;
+           animation:orb4 16s ease-in-out infinite;"></div>
+
+      <!-- Horizontal streaming data-packet lines -->
+      <div class="sline" style="top:18%;width:240px;animation-delay:0s;"></div>
+      <div class="sline" style="top:33%;width:180px;animation-delay:2.2s;"></div>
+      <div class="sline" style="top:52%;width:310px;animation-delay:1.0s;"></div>
+      <div class="sline" style="top:67%;width:200px;animation-delay:3.5s;"></div>
+      <div class="sline" style="top:82%;width:260px;animation-delay:0.7s;"></div>
+    </div>
+
+    <style>
+      @keyframes orb1 {
+        0%,100% { transform:translate(0,0) scale(1);    opacity:.7; }
+        33%      { transform:translate(70px,-50px) scale(1.12); opacity:1; }
+        66%      { transform:translate(-40px,60px) scale(.94);  opacity:.75; }
+      }
+      @keyframes orb2 {
+        0%,100% { transform:translate(0,0) scale(1);      opacity:.55; }
+        40%      { transform:translate(-90px,-70px) scale(1.18); opacity:.85; }
+        70%      { transform:translate(55px,45px) scale(.9);    opacity:.6; }
+      }
+      @keyframes orb3 {
+        0%,100% { transform:translate(0,0) scale(1);   opacity:.5; }
+        50%      { transform:translate(80px,65px) scale(1.22); opacity:.8; }
+      }
+      @keyframes orb4 {
+        0%,100% { transform:translate(0,0) scale(1);     opacity:.45; }
+        45%      { transform:translate(-60px,-45px) scale(1.15); opacity:.75; }
+      }
+
+      /* Streaming data-packet line */
+      .sline {
+        position:absolute; left:-320px; height:2px;
+        background:linear-gradient(90deg,transparent,rgba(0,210,255,0.5),rgba(0,210,255,0.9),rgba(0,210,255,0.5),transparent);
+        border-radius:2px;
+        animation:streamFlow 7s linear infinite;
+      }
+      @keyframes streamFlow {
+        from { transform:translateX(0);       opacity:0; }
+        5%   { opacity:1; }
+        92%  { opacity:1; }
+        to   { transform:translateX(130vw);  opacity:0; }
+      }
     </style>
     """,
     unsafe_allow_html=True,
@@ -319,11 +518,11 @@ with tab_overview:
             annotation_position="top right",
         )
         fig.update_layout(
-            height=420, bargap=0.05, plot_bgcolor="white",
+            height=420, bargap=0.05, plot_bgcolor="rgba(6,12,28,0)",
             legend=dict(orientation="h", y=1.12, x=0),
             margin=dict(t=50, b=40, l=10, r=10),
         )
-        fig.update_xaxes(gridcolor="#EEE"); fig.update_yaxes(gridcolor="#EEE")
+        fig.update_xaxes(gridcolor="rgba(0,180,255,0.12)"); fig.update_yaxes(gridcolor="rgba(0,180,255,0.12)")
         st.plotly_chart(fig, use_container_width=True)
 
     with c2:
@@ -366,18 +565,18 @@ with tab_overview:
     share = np.array([(payback_series <= t).mean() for t in months])
     pay_fig = go.Figure()
     pay_fig.add_trace(go.Scatter(
-        x=months, y=share * 100, mode="lines", line=dict(color=PALETTE["navy"], width=3),
-        fill="tozeroy", fillcolor="rgba(11,37,69,0.12)",
+        x=months, y=share * 100, mode="lines", line=dict(color=PALETTE["cyan"], width=3),
+        fill="tozeroy", fillcolor="rgba(0,180,255,0.10)",
         name="Cumulative payback share",
     ))
     pay_fig.add_hline(y=50, line_dash="dot", line_color=PALETTE["dgrey"])
     pay_fig.update_layout(
-        height=340, plot_bgcolor="white", showlegend=False,
+        height=340, plot_bgcolor="rgba(6,12,28,0)", showlegend=False,
         xaxis_title="Months since acquisition",
         yaxis_title="% of cohort paid back",
         margin=dict(t=20, b=40, l=10, r=10),
     )
-    pay_fig.update_xaxes(gridcolor="#EEE"); pay_fig.update_yaxes(gridcolor="#EEE", range=[0, 101])
+    pay_fig.update_xaxes(gridcolor="rgba(0,180,255,0.12)"); pay_fig.update_yaxes(gridcolor="rgba(0,180,255,0.12)", range=[0, 101])
     st.plotly_chart(pay_fig, use_container_width=True)
 
 # ── Tab 2: Segments ───────────────────────────────────────────────────────────
@@ -416,11 +615,11 @@ with tab_segments:
         fig.update_traces(textposition="outside")
         fig.update_layout(
             title="Avg CLV by segment",
-            height=400, plot_bgcolor="white",
+            height=400, plot_bgcolor="rgba(6,12,28,0)",
             margin=dict(t=50, b=40, l=10, r=10),
             legend=dict(orientation="h", y=-0.15),
         )
-        fig.update_xaxes(gridcolor="#EEE"); fig.update_yaxes(gridcolor="#EEE")
+        fig.update_xaxes(gridcolor="rgba(0,180,255,0.12)"); fig.update_yaxes(gridcolor="rgba(0,180,255,0.12)")
         st.plotly_chart(fig, use_container_width=True)
 
     with c2:
@@ -441,11 +640,11 @@ with tab_segments:
         fig.update_traces(textposition="outside")
         fig.update_layout(
             title="CLV : CAC by segment",
-            height=400, plot_bgcolor="white",
+            height=400, plot_bgcolor="rgba(6,12,28,0)",
             margin=dict(t=50, b=40, l=10, r=10),
             legend=dict(orientation="h", y=-0.15),
         )
-        fig.update_xaxes(gridcolor="#EEE"); fig.update_yaxes(gridcolor="#EEE")
+        fig.update_xaxes(gridcolor="rgba(0,180,255,0.12)"); fig.update_yaxes(gridcolor="rgba(0,180,255,0.12)")
         st.plotly_chart(fig, use_container_width=True)
 
     # CLV vs CAC scatter — segment-level view of unit economics
@@ -474,11 +673,11 @@ with tab_segments:
         name=f"CLV:CAC = {clv_cac_priority:.1f}× (priority)", hoverinfo="skip",
     ))
     scatter.update_layout(
-        height=460, plot_bgcolor="white",
+        height=460, plot_bgcolor="rgba(6,12,28,0)",
         margin=dict(t=20, b=40, l=10, r=10),
         legend=dict(orientation="h", y=-0.12),
     )
-    scatter.update_xaxes(gridcolor="#EEE"); scatter.update_yaxes(gridcolor="#EEE")
+    scatter.update_xaxes(gridcolor="rgba(0,180,255,0.12)"); scatter.update_yaxes(gridcolor="rgba(0,180,255,0.12)")
     st.plotly_chart(scatter, use_container_width=True)
 
     st.subheader("Segment summary table")
@@ -571,11 +770,11 @@ with tab_targeting:
     )
     fig.update_traces(textposition="outside")
     fig.update_layout(
-        height=420, plot_bgcolor="white",
+        height=420, plot_bgcolor="rgba(6,12,28,0)",
         margin=dict(t=30, b=40, l=10, r=10),
         legend=dict(orientation="h", y=-0.15),
     )
-    fig.update_xaxes(gridcolor="#EEE"); fig.update_yaxes(gridcolor="#EEE")
+    fig.update_xaxes(gridcolor="rgba(0,180,255,0.12)"); fig.update_yaxes(gridcolor="rgba(0,180,255,0.12)")
     st.plotly_chart(fig, use_container_width=True)
 
     # Decision table
@@ -676,18 +875,18 @@ with tab_sensitivity:
     fig = px.bar(
         scen_df, x="Scenario", y="Portfolio avg CLV",
         color="Scenario",
-        color_discrete_sequence=[PALETTE["navy"], PALETTE["rose"], PALETTE["teal"],
-                                  PALETTE["gold"], PALETTE["steel"], "#5A5A8F"],
+        color_discrete_sequence=[PALETTE["cyan"], PALETTE["rose"], PALETTE["teal"],
+                                  PALETTE["gold"], PALETTE["violet"], "#A78BFA"],
         text=scen_df["Portfolio avg CLV"].apply(lambda v: f"${v:,.0f}"),
         labels={"Portfolio avg CLV": "Portfolio avg CLV ($)"},
     )
     fig.update_traces(textposition="outside")
     fig.update_layout(
-        height=420, plot_bgcolor="white", showlegend=False,
+        height=420, plot_bgcolor="rgba(6,12,28,0)", showlegend=False,
         margin=dict(t=30, b=40, l=10, r=10),
         xaxis_tickangle=-15,
     )
-    fig.update_xaxes(gridcolor="#EEE"); fig.update_yaxes(gridcolor="#EEE")
+    fig.update_xaxes(gridcolor="rgba(0,180,255,0.12)"); fig.update_yaxes(gridcolor="rgba(0,180,255,0.12)")
     st.plotly_chart(fig, use_container_width=True)
 
     # Formatted table
@@ -712,11 +911,11 @@ with tab_sensitivity:
     )
     tor.update_traces(textposition="outside")
     tor.update_layout(
-        height=320, plot_bgcolor="white", showlegend=False,
+        height=320, plot_bgcolor="rgba(6,12,28,0)", showlegend=False,
         margin=dict(t=20, b=40, l=10, r=10),
     )
     tor.add_vline(x=0, line_color=PALETTE["dgrey"], line_width=1)
-    tor.update_xaxes(gridcolor="#EEE"); tor.update_yaxes(gridcolor="#EEE")
+    tor.update_xaxes(gridcolor="rgba(0,180,255,0.12)"); tor.update_yaxes(gridcolor="rgba(0,180,255,0.12)")
     st.plotly_chart(tor, use_container_width=True)
 
     st.markdown(
