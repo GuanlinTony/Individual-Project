@@ -20,6 +20,23 @@ The notebook serves three deliverables at once:
 2. **Analytics exhibits** (figures and tables) used in the written launch plan
 3. **One presentation-ready scorecard** (`outputs/slide_scorecard.png`) for the class pitch
 
+--- 
+
+## Project Dashboard and Product Demo
+
+### Analytical Dashboard
+
+Please check the following link to check my deployed analytical dashboard.
+
+[Analytical Dashboard](https://individual-project-mn4a33u6cehtcm4jrdbvug.streamlit.app/)
+
+### Product Demo
+
+Please click the following link to see our product demo, glimpsing what Aegis Nexus would look like when it is coming sooon!
+
+[Aegis Nexus Official](https://product-demo-aegis-nexus-esltgyl0b-guanlintonys-projects.vercel.app)
+
+
 ---
 
 ## Reproducing the results
