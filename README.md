@@ -22,11 +22,10 @@ The product is pre-launch. All user data in this project is **fully synthetic**,
 
 | Deliverable | File | Description |
 |---|---|---|
-| Analytical notebook (technical appendix) | `Marketing_Individual.ipynb` | CLV simulation, unit economics, sensitivity analysis, A/B test design, rollout plan |
-| Written launch plan report | `Aegis_Nexus_Launch_Plan.docx` | Full written plan — strategy, targeting, measurement, non-market constraints |
-| Presentation deck | `Aegis_Nexus_Tony_Chen.pptx` | 8-slide navy/gold/teal pitch deck (6-minute delivery) |
+| Analytical notebook| `Marketing_Individual.ipynb` | CLV simulation, unit economics, sensitivity analysis, A/B test design, rollout plan |
+| Written launch plan report with technical appendix | `Aegis_Nexus_Full_Report_Launch_Plan.docx` | Full written plan — strategy, targeting, measurement, non-market constraints |
+| Presentation deck | `Aegis_Nexus_Tony_Chen.pdf` | 8-slide navy/gold/teal pitch deck (6-minute delivery) |
 | Speaker script | `presentation_script.docx` | Per-slide timing, full spoken text, delivery notes, Q&A responses |
-| Technical plan (PDF) | `Technical_Plan_Aegis_Nexus.pdf` | Code snippets, methodology details, supplementary tables not in main report |
 | This file | `README.md` | Reproduction guide for all project components |
 
 ---
